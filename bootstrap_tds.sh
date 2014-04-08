@@ -1,7 +1,120 @@
 #!/usr/bin/env bash
 apt-get update
-apt-get -y install wget
+apt-get -y install wget default-jdk links
 
+####
+# Download and Install Tomcat
+####
+
+TCSRC="apache-tomcat-7.0.53"
+TCTAR="$TCSRC.tar.gz"
+
+wget http://www.webhostingjams.com/mirror/apache/tomcat/tomcat-7/v7.0.53/bin/apache-tomcat-7.0.53.tar.gz
+
+mv $TCTAR /usr/local
+cd /usr/local
+tar -zxf $TCTAR
+
+cd $TCSRC
+
+# Create a sentenv.sh script
+cd bin/
+echo '#!/bin/sh' > setenv.sh
+echo 'export JAVA_HOME=/usr/lib/jvm/default-java' >> setenv.sh
+echo 'export JAVA_OPTS="-Xmx4096m -Xms512m -server -Djava.awt.headless=true -Djava.util.prefs.systemRoot=$CATALINA_BASE/content/thredds/javaUtilPrefs"' >> setenv.sh
+echo 'export CATALINE_BASE="/usr/local/$TCSRC"' >> setenv.sh
+chmod 755 setenv.sh
+##
+# Configure tomcat
+##
+# Create a tomcat user for system service.
+useradd tomcat
+
+# Configure tomcat user file
+TCUSERS="/usr/local/$TCSRC/conf/tomcat-users.xml"
+
+echo "<?xml version='1.0' encoding='utf-8'?>" > $TCUSERS
+
+echo '<tomcat-users>' >> $TCUSERS
+echo '<role rolename="tomcat"/>' >> $TCUSERS
+echo '<role rolename="manager-gui"/>' >> $TCUSERS
+echo '<role rolename="manager-status"/>' >> $TCUSERS
+echo '<user username="tomcat" password="tomcat" roles="tomcat,manager-gui,manager-status"/>' >> $TCUSERS
+
+echo '</tomcat-users>' >> $TCUSERS
+
+chown -R tomcat /usr/local/$TCSRC
+
+###
+# End tomcat configuration
+###
+
+#####
+# Create a tomcat system init script.
+#####
+
+echo '#!/bin/bash' > /etc/init.d/tomcat
+echo '#' >> /etc/init.d/tomcat
+echo '# tomcat' >> /etc/init.d/tomcat        
+echo '#' >> /etc/init.d/tomcat
+echo '# chkconfig:' >> /etc/init.d/tomcat 
+echo '# description: 	Start up the Tomcat servlet engine.' >> /etc/init.d/tomcat
+echo '' >> /etc/init.d/tomcat
+echo '# Source function library.' >> /etc/init.d/tomcat
+#echo '. /etc/init.d/functions' >> /etc/init.d/tomcat
+echo 'RETVAL=$?' >> /etc/init.d/tomcat
+echo 'CATALINA_HOME="/usr/local/apache-tomcat-7.0.53"' >> /etc/init.d/tomcat
+
+echo 'case "$1" in' >> /etc/init.d/tomcat
+echo ' start)' >> /etc/init.d/tomcat
+echo '        if [ -f $CATALINA_HOME/bin/startup.sh ];' >> /etc/init.d/tomcat
+echo '          then' >> /etc/init.d/tomcat
+echo '	    echo $"Starting Tomcat"' >> /etc/init.d/tomcat
+echo '            /bin/su tomcat $CATALINA_HOME/bin/startup.sh' >> /etc/init.d/tomcat
+echo '        fi' >> /etc/init.d/tomcat
+echo '	;;' >> /etc/init.d/tomcat
+echo ' stop)' >> /etc/init.d/tomcat
+echo '        if [ -f $CATALINA_HOME/bin/shutdown.sh ];' >> /etc/init.d/tomcat
+echo '          then' >> /etc/init.d/tomcat
+echo '	    echo $"Stopping Tomcat"' >> /etc/init.d/tomcat
+echo '            /bin/su tomcat $CATALINA_HOME/bin/shutdown.sh' >> /etc/init.d/tomcat
+echo '        fi' >> /etc/init.d/tomcat
+echo ' 	;;' >> /etc/init.d/tomcat
+echo ' *)' >> /etc/init.d/tomcat
+echo ' 	echo $"Usage: $0 {start|stop}"' >> /etc/init.d/tomcat
+echo '	exit 1' >> /etc/init.d/tomcat
+echo '	;;' >> /etc/init.d/tomcat
+echo 'esac' >> /etc/init.d/tomcat
+
+echo 'exit $RETVAL' >> /etc/init.d/tomcat
+chmod 755 /etc/init.d/tomcat
+ln -s /etc/init.d/tomcat /etc/rc5.d/s71tomcat
+
+
+#####
+# End tomcat init script
+#####
+
+#####
+# Start tomcat
+#####
+/etc/init.d/tomcat start
+
+#####
+# Install TDS server
+#####
 
 # Fetch latest tds WAR
-wget https://artifacts.unidata.ucar.edu/content/repositories/unidata-releases/edu/ucar/tds/4.3.21/tds-4.3.21.war
+TDSWAR="thredds.war"
+wget ftp://ftp.unidata.ucar.edu/pub/thredds/4.3/current/$TDSWAR
+chown tomcat $TDSWAR
+mv $TDSWAR /usr/local/$TCSRC/webapps
+
+# Wait 5 seconds, then do some symbolic linkage.
+echo "Waiting 5 seconds then setting up symbolic links."
+sleep 5
+TDDIR="/usr/local/$TCSRC/content/thredds"
+rm $TDDIR/catalog.xml
+rm $TDDIR/threddsConfig.xml
+ln -s /vagrant/catalog.xml $TDDIR/catalog.xml
+ln -s /vagrant/threddsConfig.xml $TDDIR/threddsConfig.xml

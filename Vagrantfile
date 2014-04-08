@@ -22,8 +22,9 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "saucy64", primary: true do |v|
+    v.vm.provision :shell, :path => "bootstrap_tds.sh"
     v.vm.box = "WardF/saucy64"
-    #v.vm.provision :shell, :path => "bootstrap_tds.sh"
+    v.vm.network "forwarded_port", host: 8080, guest: 8080 
   end
 
 
