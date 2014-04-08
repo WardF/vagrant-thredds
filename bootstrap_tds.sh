@@ -119,7 +119,7 @@ fi
 chown tomcat $TDSWAR
 mv $TDSWAR /usr/local/$TCSRC/webapps
 
-# Wait 5 seconds, then do some symbolic linkage.
+# Wait 10 seconds, then do some symbolic linkage.
 echo "Waiting 10 seconds then setting up symbolic links."
 
 count=0
