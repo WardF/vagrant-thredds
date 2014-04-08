@@ -9,7 +9,9 @@ apt-get -y install wget default-jdk links
 TCSRC="apache-tomcat-7.0.53"
 TCTAR="$TCSRC.tar.gz"
 
-wget http://www.webhostingjams.com/mirror/apache/tomcat/tomcat-7/v7.0.53/bin/apache-tomcat-7.0.53.tar.gz
+if [ ! -f $TCSRC ]; then
+    wget http://www.webhostingjams.com/mirror/apache/tomcat/tomcat-7/v7.0.53/bin/apache-tomcat-7.0.53.tar.gz
+fi
 
 mv $TCTAR /usr/local
 cd /usr/local
@@ -51,9 +53,14 @@ chown -R tomcat /usr/local/$TCSRC
 
 #####
 # Create a tomcat system init script.
+# /etc/init.d/tomcat
 #####
 
-echo '#!/bin/bash' > /etc/init.d/tomcat
+#echo '#!/bin/bash' > /etc/init.d/tomcat
+echo '# Tomcat auto-start' > /etc/init.d/tomcat
+echo '#' >> /etc/init.d/tomcat
+echo '# description: Auto-starts tomcat' >> /etc/init.d/tomcat
+echo '# processname: tomcat' >> /etc/init.d/tomcat
 echo '#' >> /etc/init.d/tomcat
 echo '# tomcat' >> /etc/init.d/tomcat        
 echo '#' >> /etc/init.d/tomcat
@@ -88,7 +95,8 @@ echo 'esac' >> /etc/init.d/tomcat
 
 echo 'exit $RETVAL' >> /etc/init.d/tomcat
 chmod 755 /etc/init.d/tomcat
-ln -s /etc/init.d/tomcat /etc/rc5.d/s71tomcat
+ln -s /etc/init.d/tomcat /etc/rc1.d/K71tomcat
+ln -s /etc/init.d/tomcat /etc/rc5.d/S71tomcat
 
 
 #####
@@ -106,15 +114,31 @@ ln -s /etc/init.d/tomcat /etc/rc5.d/s71tomcat
 
 # Fetch latest tds WAR
 TDSWAR="thredds.war"
-wget ftp://ftp.unidata.ucar.edu/pub/thredds/4.3/current/$TDSWAR
+if [ ! -f $TDSWAR ]; then
+    wget ftp://ftp.unidata.ucar.edu/pub/thredds/4.3/current/$TDSWAR
+fi
 chown tomcat $TDSWAR
 mv $TDSWAR /usr/local/$TCSRC/webapps
 
 # Wait 5 seconds, then do some symbolic linkage.
-echo "Waiting 5 seconds then setting up symbolic links."
-sleep 5
+echo "Waiting 10 seconds then setting up symbolic links."
+
+count=0
+
 TDDIR="/usr/local/$TCSRC/content/thredds"
+echo "Constructing links to thredd configuration."
+echo "Waiting for thredds to be installed."
+while [ $count -lt 10 ]; do
+    if [ -d "$TDDIR" ]; then
+	count=50
+    else
+	echo "Sleeping 10 Seconds"
+	sleep 10
+    fi
+done
+
+
 rm $TDDIR/catalog.xml
 rm $TDDIR/threddsConfig.xml
-ln -s /vagrant/catalog.xml $TDDIR/catalog.xml
-ln -s /vagrant/threddsConfig.xml $TDDIR/threddsConfig.xml
+ln -s /vagrant/tds_config/catalog.xml $TDDIR/catalog.xml
+ln -s /vagrant/tds_config/threddsConfig.xml $TDDIR/threddsConfig.xml

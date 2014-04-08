@@ -6,7 +6,7 @@
   <serverInformation>
     <name>Initial TDS Installation</name>
     <logoUrl>/thredds/threddsIcon.gif</logoUrl>
-    <logoAltText>Initial TDS Installation</logoAltText>
+    <logoAltText>Vagrant TDS Installation</logoAltText>
 
     <abstract>Scientific Data</abstract>
     <keywords>meteorology, atmosphere, climate, ocean, earth science</keywords>
