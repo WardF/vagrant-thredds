@@ -95,8 +95,7 @@ echo 'esac' >> /etc/init.d/tomcat
 
 echo 'exit $RETVAL' >> /etc/init.d/tomcat
 chmod 755 /etc/init.d/tomcat
-ln -s /etc/init.d/tomcat /etc/rc1.d/K71tomcat
-ln -s /etc/init.d/tomcat /etc/rc5.d/S71tomcat
+update-rc.d tomcat defaults
 
 
 #####
@@ -142,3 +141,4 @@ rm $TDDIR/catalog.xml
 rm $TDDIR/threddsConfig.xml
 ln -s /vagrant/tds_config/catalog.xml $TDDIR/catalog.xml
 ln -s /vagrant/tds_config/threddsConfig.xml $TDDIR/threddsConfig.xml
+chown -R tomcat $TDDIR/
