@@ -67,9 +67,6 @@ echo '#' >> /etc/init.d/tomcat
 echo '# chkconfig:' >> /etc/init.d/tomcat 
 echo '# description: 	Start up the Tomcat servlet engine.' >> /etc/init.d/tomcat
 echo '' >> /etc/init.d/tomcat
-echo '# Source function library.' >> /etc/init.d/tomcat
-#echo '. /etc/init.d/functions' >> /etc/init.d/tomcat
-echo 'RETVAL=$?' >> /etc/init.d/tomcat
 echo 'CATALINA_HOME="/usr/local/apache-tomcat-7.0.53"' >> /etc/init.d/tomcat
 
 echo 'case "$1" in' >> /etc/init.d/tomcat
