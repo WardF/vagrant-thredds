@@ -141,6 +141,14 @@ ln -s /vagrant/tds_config/threddsConfig.xml $TDDIR/threddsConfig.xml
 chown -R tomcat $TDDIR/
 
 #####
+# Clean Up
+#####
+mkdir -p /home/vagrant/installation_files
+mv /home/vagrant/* /home/vagrant/installation_files/
+
+chown -R vagrant:vagrant /home/vagrant
+
+#####
 # Set the proper timezone.
 #####
 echo "US/Mountain" | tee /etc/timezone
