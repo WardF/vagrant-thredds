@@ -139,3 +139,9 @@ rm $TDDIR/threddsConfig.xml
 ln -s /vagrant/tds_config/catalog.xml $TDDIR/catalog.xml
 ln -s /vagrant/tds_config/threddsConfig.xml $TDDIR/threddsConfig.xml
 chown -R tomcat $TDDIR/
+
+#####
+# Set the proper timezone.
+#####
+echo "US/Mountain" | tee /etc/timezone
+dpkg-reconfigure --frontend noninteractive tzdata
