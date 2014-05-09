@@ -136,8 +136,8 @@ done
 
 rm $TDDIR/catalog.xml
 rm $TDDIR/threddsConfig.xml
-ln -s /vagrant/tds_config/catalog.xml $TDDIR/catalog.xml
-ln -s /vagrant/tds_config/threddsConfig.xml $TDDIR/threddsConfig.xml
+ln -s /vagrant/tds_config_plain/catalog.xml $TDDIR/catalog.xml
+ln -s /vagrant/tds_config_plain/threddsConfig.xml $TDDIR/threddsConfig.xml
 chown -R tomcat $TDDIR/
 
 #####
