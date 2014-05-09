@@ -1,6 +1,72 @@
 #!/usr/bin/env bash
+
+#####
+# Install development tools when using this profile.
+##### 
+
 apt-get update
-apt-get -y install wget default-jdk links
+apt-get -y install wget default-jdk links ubuntu-dev-tools git m4 libcurl4-openssl-dev htop libtool bison flex autoconf curl g++ midori
+
+## Install several packages from source.
+# * cmake
+# * hdf4
+# * hdf5
+# * netcdf
+
+CMAKE_VER="cmake-2.8.12.2"
+HDF4_VER="hdf-4.2.10"
+HDF5_VER="hdf5-1.8.12"
+NC_VER="v4.3.2"
+
+# Install cmake from source
+if [ ! -f /usr/local/bin/cmake ]; then
+    CMAKE_FILE="$CMAKE_VER".tar.gz
+    wget http://www.cmake.org/files/v2.8/$CMAKE_FILE
+    tar -zxf $CMAKE_FILE
+    pushd $CMAKE_VER
+    ./configure --prefix=/usr/local
+    make install
+    popd
+    rm -rf $CMAKE_VER
+fi
+
+# Install hdf4 from source.
+if [ ! -f /usr/local/lib/libhdf4.settings ]; then
+    HDF4_FILE="$HDF4_VER".tar.bz2
+    wget http://www.hdfgroup.org/ftp/HDF/HDF_Current/src/$HDF4_FILE
+    tar -jxf $HDF4_FILE
+    pushd $HDF4_VER
+    ./configure --disable-static --enable-shared --disable-netcdf --disable-fortran --prefix=/usr/local
+    sudo make install
+    popd
+    rm -rf $HDF4_VER
+fi
+
+# Install hdf5 from source
+if [ ! -f /usr/local/lib/libhdf5.settings ]; then
+    HDF5_FILE="$HDF5_VER".tar.bz2
+    wget http://www.hdfgroup.org/ftp/HDF5/current/src/$HDF5_FILE
+    tar -jxf $HDF5_FILE
+    pushd $HDF5_VER
+    ./configure --disable-static --enable-shared --disable-fortran --enable-hl --disable-fortran --prefix=/usr/local
+    make install
+    popd
+    rm -rf $HDF5_VER
+fi
+
+# Install netcdf from source
+if [ ! -f /usr/local/include/netcdf.h ]; then
+    NC_DIR="nc-$NC_VER"
+    git clone http://github.com/Unidata/netcdf-c "$NC_DIR"
+    cd "$NC_DIR"
+    mkdir build
+    cd build/
+    cmake .. -DENABLE_HDF4=ON -DENABLE_DAP=ON -DENABLE_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local
+    make
+    make install
+    cd /home/vagrant
+    rm -rf $NC_DIR
+fi
 
 ####
 # Download and Install Tomcat
