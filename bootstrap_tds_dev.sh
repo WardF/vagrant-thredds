@@ -4,8 +4,11 @@
 # Install development tools when using this profile.
 ##### 
 
-apt-get update
-apt-get -y install wget default-jdk links ubuntu-dev-tools git m4 libcurl4-openssl-dev htop libtool bison flex autoconf curl g++ midori
+# Only do this if we haven't already provisioned the system.
+if [ ! -d /home/vagrant/installation_files ]; then
+    apt-get update
+    apt-get -y install wget default-jdk links ubuntu-dev-tools git m4 libcurl4-openssl-dev htop libtool bison flex autoconf curl g++ midori libjpeg-dev
+fi
 
 ## Install several packages from source.
 # * cmake
@@ -61,7 +64,7 @@ if [ ! -f /usr/local/include/netcdf.h ]; then
     cd "$NC_DIR"
     mkdir build
     cd build/
-    cmake .. -DENABLE_HDF4=ON -DENABLE_DAP=ON -DENABLE_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local
+    cmake .. -DENABLE_HDF4=ON -DENABLE_DAP=ON -DENABLE_TESTS=OFF -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_PREFIX_PATH=/usr/local
     make
     make install
     cd /home/vagrant
