@@ -15,12 +15,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   
   config.vm.provider "virtualbox" do |v|
     v.memory = 2048
-    v.cpus = 2
+    v.cpus = 1
   end
 
   config.vm.provider "parallels" do |v|
     v.memory = 2048
-    v.cpus = 2
+    v.cpus = 1
   end
 
   config.vm.define "remotetest-plain", primary: true do |v|
@@ -34,9 +34,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.vm.box = "WardF/trusty64"
     v.vm.network "private_network", ip: "10.1.2.13"
   end
-
-
-
 
   # The url from where the 'config.vm.box' box will be fetched if it
   # doesn't already exist on the user's system.

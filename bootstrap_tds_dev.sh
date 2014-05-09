@@ -10,11 +10,13 @@ if [ ! -d /home/vagrant/installation_files ]; then
     apt-get -y install wget default-jdk links ubuntu-dev-tools git m4 libcurl4-openssl-dev htop libtool bison flex autoconf curl g++ midori libjpeg-dev
 fi
 
-## Install several packages from source.
+######
+# Install several packages from source.
 # * cmake
 # * hdf4
 # * hdf5
 # * netcdf
+######
 
 CMAKE_VER="cmake-2.8.12.2"
 HDF4_VER="hdf-4.2.10"
@@ -186,8 +188,6 @@ chown tomcat $TDSWAR
 mv $TDSWAR /usr/local/$TCSRC/webapps
 
 # Wait 10 seconds, then do some symbolic linkage.
-echo "Waiting 10 seconds then setting up symbolic links."
-
 count=0
 
 TDDIR="/usr/local/$TCSRC/content/thredds"
@@ -201,7 +201,6 @@ while [ $count -lt 10 ]; do
 	sleep 10
     fi
 done
-
 
 rm $TDDIR/catalog.xml
 rm $TDDIR/threddsConfig.xml
