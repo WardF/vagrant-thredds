@@ -23,11 +23,16 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     v.cpus = 2
   end
 
-  config.vm.define "remotetest", primary: true do |v|
-    v.vm.provision :shell, :path => "bootstrap_tds.sh"
+  config.vm.define "remotetest-plain", primary: true do |v|
+    v.vm.provision :shell, :path => "bootstrap_tds_plain.sh"
     v.vm.box = "WardF/trusty64"
     v.vm.network "private_network", ip: "10.1.2.12"
-    #v.vm.network "forwarded_port", host: 8080, guest: 8080 
+  end
+
+  config.vm.define "remotetest-dev" do |v|
+    v.vm.provision :shell, :path => "bootstrap_tds_plain.sh"
+    v.vm.box = "WardF/trusty64"
+    v.vm.network "private_network", ip: "10.1.2.12"
   end
 
 
