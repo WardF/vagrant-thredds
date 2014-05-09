@@ -30,7 +30,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   end
 
   config.vm.define "remotetest-dev" do |v|
-    v.vm.provision :shell, :path => "bootstrap_tds_plain.sh"
+    v.vm.provision :shell, :path => "bootstrap_tds_dev.sh"
     v.vm.box = "WardF/trusty64"
     v.vm.network "private_network", ip: "10.1.2.12"
   end
