@@ -12,7 +12,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Every Vagrant virtual environment requires a box to build off of.
 
   config.ssh.forward_x11 = "true"
-  
+
   config.vm.provider "virtualbox" do |v|
     v.memory = 2048
     v.cpus = 1
@@ -25,13 +25,13 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "remotetest-plain", primary: true do |v|
     v.vm.provision :shell, :path => "bootstrap_tds_plain.sh"
-    v.vm.box = "WardF/trusty64"
+    v.vm.box = "Ubuntu/trusty64"
     v.vm.network "private_network", ip: "10.1.2.12"
   end
 
   config.vm.define "remotetest-dev" do |v|
     v.vm.provision :shell, :path => "bootstrap_tds_dev.sh"
-    v.vm.box = "WardF/trusty64"
+    v.vm.box = "Ubuntu/trusty64"
     v.vm.network "private_network", ip: "10.1.2.13"
   end
 
