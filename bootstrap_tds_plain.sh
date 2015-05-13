@@ -6,11 +6,11 @@ apt-get -y install wget default-jdk links
 # Download and Install Tomcat
 ####
 
-TCSRC="apache-tomcat-7.0.53"
+TCSRC="apache-tomcat-8.0.22"
 TCTAR="$TCSRC.tar.gz"
 
 if [ ! -f $TCSRC ]; then
-    wget http://www.webhostingjams.com/mirror/apache/tomcat/tomcat-7/v7.0.53/bin/apache-tomcat-7.0.53.tar.gz
+    wget http://download.nextag.com/apache/tomcat/tomcat-8/v8.0.22/bin/apache-tomcat-8.0.22.tar.gz
 fi
 
 mv $TCTAR /usr/local
@@ -62,12 +62,12 @@ echo '#' >> /etc/init.d/tomcat
 echo '# description: Auto-starts tomcat' >> /etc/init.d/tomcat
 echo '# processname: tomcat' >> /etc/init.d/tomcat
 echo '#' >> /etc/init.d/tomcat
-echo '# tomcat' >> /etc/init.d/tomcat        
+echo '# tomcat' >> /etc/init.d/tomcat
 echo '#' >> /etc/init.d/tomcat
-echo '# chkconfig:' >> /etc/init.d/tomcat 
+echo '# chkconfig:' >> /etc/init.d/tomcat
 echo '# description: 	Start up the Tomcat servlet engine.' >> /etc/init.d/tomcat
 echo '' >> /etc/init.d/tomcat
-echo 'CATALINA_HOME="/usr/local/apache-tomcat-7.0.53"' >> /etc/init.d/tomcat
+echo 'CATALINA_HOME="/usr/local/apache-tomcat-8.0.22"' >> /etc/init.d/tomcat
 
 echo 'case "$1" in' >> /etc/init.d/tomcat
 echo ' start)' >> /etc/init.d/tomcat

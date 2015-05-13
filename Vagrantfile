@@ -25,7 +25,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "remotetest-plain", primary: true do |v|
     v.vm.provision :shell, :path => "bootstrap_tds_plain.sh"
-    v.vm.box = "Ubuntu/trusty64"
+    v.vm.box = "unicorn64"
     v.vm.network "private_network", ip: "10.1.2.12"
   end
 
